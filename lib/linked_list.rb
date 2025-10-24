@@ -2,23 +2,23 @@
 class LinkedList
   attr_accessor :head
   
-  def initialize(head = nil)
-    @head = Node.new(head)
+  def initialize(head_key = nil, head_value = nil)
+    @head = Node.new(head_key, head_value)
   end
 
-  def append(value)
+  def append(key, value)
     #adds a new node containing value to the end of the list
     if @head.nil?
-      @head = Node.new(value)
+      @head = Node.new(key, value)
     else
       current_node = self.tail
-      current_node.next_node = Node.new(value) 
+      current_node.next_node = Node.new(key, value) 
     end
   end
 
-  def prepend(value)
+  def prepend(key, value)
     #adds a new node containing value to the start of the list
-    @head = Node.new(value, @head)
+    @head = Node.new(key, value, @head)
   end
 
   def size
@@ -108,16 +108,16 @@ class LinkedList
   #Extra Credit
   #Tip: When you insert or remove a node, consider how it will affect the existing nodes. Some of the nodes will need their #next_node link updated
   
-  def insert_at(value, index)
+  def insert_at(key, value, index)
     #inserts a new node with the provided value at the given index
     if @head.nil? || index == self.size
-      self.append(value)
+      self.append(key, value)
     elsif index > self.size
       return puts "Index too large. Cannot insert."
     elsif index == 0
-      self.prepend(value)
+      self.prepend(key, value)
     else
-      new_node = Node.new(value, self.at(index))
+      new_node = Node.new(key, value, self.at(index))
       self.at(index - 1).next_node = new_node
     end
   end
