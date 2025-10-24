@@ -146,13 +146,17 @@ class LinkedList
 
   def remove_at(index)
     #removes the node at the given index
+    removed_node = nil
     if index == 0
+      removed_node = @head
       @head = self.at(1) if self.size > 1
       @head = nil if self.size == 1
-    elsif index == self.size
+    elsif index >= self.size
       return puts "Index too large. Cannot remove a node that doesn't exist."
     else
+      removed_node = self.at(index)
       self.at(index - 1).next_node = self.at(index + 1)
     end
+    removed_node
   end
 end

@@ -59,7 +59,11 @@ class HashMap
   end
 
   def remove(key)
-    
+    return nil if !self.has?(key)
+    hash_code = self.hash(key)
+
+    key_index = @buckets[hash_code].find_key(key)
+    @buckets[hash_code].remove_at(key_index).value
   end
 
   def clear
