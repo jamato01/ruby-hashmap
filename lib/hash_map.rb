@@ -51,7 +51,11 @@ class HashMap
   end
 
   def has?(key)
-
+    @capacity.times do |index|
+      next if @buckets[index].nil?
+      return true if @buckets[index].contains_key?(key)
+    end
+    false
   end
 
   def remove(key)
