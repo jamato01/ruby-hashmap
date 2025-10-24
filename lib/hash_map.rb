@@ -67,15 +67,31 @@ class HashMap
   end
 
   def clear
-    
+    @capacity = 16
+    @length = 0
+    @buckets = Array.new(@capacity)
   end
 
   def keys
-    
+    keys_array = []
+    @capacity.times do |buckets_index|
+      next if @buckets[buckets_index].nil?
+      @buckets[buckets_index].size.times do |linked_list_index|
+        keys_array << @buckets[buckets_index].at(linked_list_index).key
+      end
+    end
+    keys_array
   end
 
   def values
-    
+    values_array = []
+    @capacity.times do |buckets_index|
+      next if @buckets[buckets_index].nil?
+      @buckets[buckets_index].size.times do |linked_list_index|
+        values_array << @buckets[buckets_index].at(linked_list_index).value
+      end
+    end
+    values_array
   end
 
   def entries
