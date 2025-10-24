@@ -40,7 +40,14 @@ class HashMap
   end
 
   def get(key)
-    
+    hash_code = self.hash(key)
+
+    if @buckets[hash_code].nil? || @buckets[hash_code].find_key(key).nil?
+      return nil
+    else
+      key_index = @buckets[hash_code].find_key(key)
+      return @buckets[hash_code].at(key_index).value
+    end
   end
 
   def has?(key)
