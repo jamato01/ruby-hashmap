@@ -95,7 +95,16 @@ class HashMap
   end
 
   def entries
-    
+    entries_array = []
+    @capacity.times do |buckets_index|
+      next if @buckets[buckets_index].nil?
+      @buckets[buckets_index].size.times do |linked_list_index|
+        this_key = @buckets[buckets_index].at(linked_list_index).key
+        this_value = @buckets[buckets_index].at(linked_list_index).value
+        entries_array << [this_key, this_value]
+      end
+    end
+    entries_array
   end
 
   def to_s
