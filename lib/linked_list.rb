@@ -81,12 +81,34 @@ class LinkedList
     false
   end
 
+  def contains_key?(key)
+    #returns true if the passed in key is in the list and otherwise returns false
+    current_node = @head
+    until current_node == nil
+      return true if current_node.key == key
+      current_node = current_node.next_node
+    end
+    false
+  end
+
   def find(value)
     #returns the index of the node containing value, or nil if not found
     current_index = 0
     current_node = @head
     until current_node == nil
       return current_index if current_node.value == value
+      current_node = current_node.next_node
+      current_index += 1
+    end
+    nil
+  end
+
+  def find_key(key)
+    #returns the index of the node containing key, or nil if not found
+    current_index = 0
+    current_node = @head
+    until current_node == nil
+      return current_index if current_node.key == key
       current_node = current_node.next_node
       current_index += 1
     end

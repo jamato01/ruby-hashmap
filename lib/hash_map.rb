@@ -1,10 +1,12 @@
 # This class creates and manipulates HashMaps
 class HashMap
+  attr_accessor :length
 
   def initialize
     @load_factor = 0.75
     @capacity = 16
     @buckets = Array.new(@capacity)
+    @length = 0
   end
 
   def hash(key)
@@ -13,14 +15,27 @@ class HashMap
 
     key.each_char { |char| hash_code = prime_number * hash_code + char.ord }
 
-    hash_code
+    hash_code % @capacity
   end
 
   def set(key, value)
-    if has?(key)
-      #replace value
+    hash_code = self.hash(key)
+
+    if @buckets[hash_code].nil?
+      @buckets[hash_code] = LinkedList.new(key, value)
+      @length += 1
     else
       #add to linked list (if nil it will just become the head of a linked list)
+      if @buckets[hash_code].contains_key?(key)
+        #replace value for key
+        key_index = @buckets[hash_code].find_key(key)
+        @buckets[hash_code].remove_at(key_index)
+        @buckets[hash_code].insert_at(key, value, key_index)
+      else
+        #add value to end of linked list
+        @buckets[hash_code].append(key, value)
+        @length += 1
+      end
     end 
   end
 
@@ -33,10 +48,6 @@ class HashMap
   end
 
   def remove(key)
-    
-  end
-
-  def length
     
   end
 
@@ -54,5 +65,13 @@ class HashMap
 
   def entries
     
+  end
+
+  def to_s
+    hash_map_print = ""
+    @capacity.times do |index|
+      hash_map_print += "#{index}: #{@buckets[index]}\n"
+    end
+    hash_map_print
   end
 end
