@@ -44,7 +44,7 @@ class LinkedList
 
   def at(index)
     #returns the node at the given index
-    return "Index not found" if index >= self.size
+    return nil if index >= self.size
     current_index = 0
     current_node = @head
     while current_index <= index
