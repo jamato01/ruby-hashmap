@@ -13,43 +13,38 @@ class HashMap
     hash_code = 0
     prime_number = 31
 
-    key.each_char { |char| hash_code = prime_number * hash_code + char.ord }
+    key.each_char { |char| hash_code = (prime_number * hash_code) + char.ord }
 
     hash_code % @capacity
   end
 
   def set(key, value)
-    self.double_capacity if self.length >= @capacity * @load_factor && !self.has?(key)
-    
-    hash_code = self.hash(key)
+    double_capacity if length >= @capacity * @load_factor && !has?(key)
+
+    hash_code = hash(key)
 
     if @buckets[hash_code].nil?
       @length += 1
       @buckets[hash_code] = LinkedList.new(key, value)
+    elsif @buckets[hash_code].contains_key?(key)
+      # add to linked list (if nil it will just become the head of a linked list)
+      key_index = @buckets[hash_code].find_key(key)
+      @buckets[hash_code].remove_at(key_index).insert_at(key, value, key_index)
+    # replace value for key
     else
-      #add to linked list (if nil it will just become the head of a linked list)
-      if @buckets[hash_code].contains_key?(key)
-        #replace value for key
-        key_index = @buckets[hash_code].find_key(key)
-        @buckets[hash_code].remove_at(key_index)
-        @buckets[hash_code].insert_at(key, value, key_index)
-      else
-        #add value to end of linked list
-        @length += 1
-        @buckets[hash_code].append(key, value)
-      end
-    end 
+      # add value to end of linked list
+      @length += 1
+      @buckets[hash_code].append(key, value)
+    end
   end
 
   def get(key)
-    hash_code = self.hash(key)
+    hash_code = hash(key)
 
-    if @buckets[hash_code].nil? || @buckets[hash_code].find_key(key).nil?
-      return nil
-    else
-      key_index = @buckets[hash_code].find_key(key)
-      return @buckets[hash_code].at(key_index).value
-    end
+    return nil if @buckets[hash_code].nil? || @buckets[hash_code].find_key(key).nil?
+
+    key_index = @buckets[hash_code].find_key(key)
+    @buckets[hash_code].at(key_index).value
   end
 
   def has?(key)
@@ -61,8 +56,9 @@ class HashMap
   end
 
   def remove(key)
-    return nil if !self.has?(key)
-    hash_code = self.hash(key)
+    return nil unless has?(key)
+
+    hash_code = hash(key)
 
     key_index = @buckets[hash_code].find_key(key)
     @buckets[hash_code].remove_at(key_index).value
@@ -78,6 +74,7 @@ class HashMap
     keys_array = []
     @capacity.times do |buckets_index|
       next if @buckets[buckets_index].nil?
+
       @buckets[buckets_index].size.times do |linked_list_index|
         keys_array << @buckets[buckets_index].at(linked_list_index).key
       end
@@ -89,6 +86,7 @@ class HashMap
     values_array = []
     @capacity.times do |buckets_index|
       next if @buckets[buckets_index].nil?
+
       @buckets[buckets_index].size.times do |linked_list_index|
         values_array << @buckets[buckets_index].at(linked_list_index).value
       end
@@ -100,6 +98,7 @@ class HashMap
     entries_array = []
     @capacity.times do |buckets_index|
       next if @buckets[buckets_index].nil?
+
       @buckets[buckets_index].size.times do |linked_list_index|
         this_key = @buckets[buckets_index].at(linked_list_index).key
         this_value = @buckets[buckets_index].at(linked_list_index).value
@@ -119,12 +118,12 @@ class HashMap
 
   def double_capacity
     @capacity *= 2
-    current_keys = self.keys
-    current_values = self.values
-    current_length = self.length
-    self.clear(@capacity)
+    current_keys = keys
+    current_values = values
+    current_length = length
+    clear(@capacity)
     current_length.times do |index|
-      self.set(current_keys[index], current_values[index])
+      set(current_keys[index], current_values[index])
     end
   end
 end

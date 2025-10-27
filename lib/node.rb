@@ -1,7 +1,7 @@
-#This class creates and manages nodes for the linked list
+# This class creates and manages nodes for the linked list
 class Node
   attr_accessor :key, :value, :next_node
-  
+
   def initialize(key = nil, value = nil, next_node = nil)
     @key = key
     @value = value
@@ -11,5 +11,4 @@ class Node
   def to_s
     "( #{@value} )"
   end
-
 end
