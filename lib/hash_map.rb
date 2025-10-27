@@ -1,11 +1,11 @@
 # This class creates and manipulates HashMaps
 class HashMap
-  attr_accessor :length
+  attr_accessor :length, :capacity
 
   def initialize
     @load_factor = 0.75
     @capacity = 16
-    @buckets = Array.new(@capacity)
+    @buckets = Array.new(@capacity, nil)
     @length = 0
   end
 
@@ -19,11 +19,13 @@ class HashMap
   end
 
   def set(key, value)
+    self.double_capacity if self.length >= @capacity * @load_factor && !self.has?(key)
+    
     hash_code = self.hash(key)
 
     if @buckets[hash_code].nil?
-      @buckets[hash_code] = LinkedList.new(key, value)
       @length += 1
+      @buckets[hash_code] = LinkedList.new(key, value)
     else
       #add to linked list (if nil it will just become the head of a linked list)
       if @buckets[hash_code].contains_key?(key)
@@ -33,8 +35,8 @@ class HashMap
         @buckets[hash_code].insert_at(key, value, key_index)
       else
         #add value to end of linked list
-        @buckets[hash_code].append(key, value)
         @length += 1
+        @buckets[hash_code].append(key, value)
       end
     end 
   end
@@ -66,8 +68,8 @@ class HashMap
     @buckets[hash_code].remove_at(key_index).value
   end
 
-  def clear
-    @capacity = 16
+  def clear(capacity = 16)
+    @capacity = capacity
     @length = 0
     @buckets = Array.new(@capacity)
   end
@@ -113,5 +115,16 @@ class HashMap
       hash_map_print += "#{index}: #{@buckets[index]}\n"
     end
     hash_map_print
+  end
+
+  def double_capacity
+    @capacity *= 2
+    current_keys = self.keys
+    current_values = self.values
+    current_length = self.length
+    self.clear(@capacity)
+    current_length.times do |index|
+      self.set(current_keys[index], current_values[index])
+    end
   end
 end
